@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context.xsd">
+                           
+    <context:property-placeholder location="classpath:main.properties" />
+                           
+    <!-- WebSphere MQ Connection Factory -->
+	<bean id="mqConnectionFactory" class="com.ibm.mq.jms.MQQueueConnectionFactory">
+		<property name="hostName">
+			<value>${queue_hostname}</value>
+		</property>
+		<property name="port">
+			<value>${queue_port}</value>
+		</property>
+		<property name="queueManager">
+			<value>${queue_manager}</value>
+		</property>
+		<property name="transportType">
+			<value>1</value>
+		</property>
+	</bean>
+
+	<!-- JMS Queue Connection Factory -->
+	<bean id="jmsQueueConnectionFactory"
+		class="org.springframework.jms.connection.SingleConnectionFactory102">
+		<property name="targetConnectionFactory">
+			<ref bean="mqConnectionFactory" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+	</bean>
+
+	<!-- JMS Destination Resolver -->
+	<bean id="jmsDestinationResolver"
+		class="org.springframework.jms.support.destination.DynamicDestinationResolver">
+	</bean>
+
+	<!-- JMS Queue Template -->
+	<bean id="jmsQueueTemplate" class="org.springframework.jms.core.JmsTemplate102">
+		<property name="connectionFactory">
+			<ref bean="jmsQueueConnectionFactory" />
+		</property>
+		<property name="destinationResolver">
+			<ref bean="jmsDestinationResolver" />
+		</property>
+		<property name="pubSubDomain">
+			<value>false</value>
+		</property>
+		<property name="receiveTimeout">
+			<value>20000</value>
+		</property>
+	</bean>
+	
+	<bean id="messageService" class="com.test.testspringjmsmq.MessageService" />
+</beans>
