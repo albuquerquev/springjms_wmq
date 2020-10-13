@@ -16,7 +16,7 @@
 		<webSphereMQVersion>7.0.1</webSphereMQVersion>
 		<springJMSVersion>3.0.3.RELEASE</springJMSVersion>
 		<springTestVersion>3.0.5.RELEASE</springTestVersion>
-		<junitVersion>4.6</junitVersion>
+		<junitVersion>4.13.1</junitVersion>
 	</properties>
 
 	<dependencies>
